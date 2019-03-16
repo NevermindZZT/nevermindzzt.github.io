@@ -62,8 +62,8 @@ kramdown:
 # Gitalk
 gitalk:
   enable: true    #是否开启Gitalk评论
-  clientID: ee277da8514037e6985c   #生成的clientID
-  clientSecret: caa28062aeee511b47b584545ba3460156a54f4b  #同上
+  clientID: 2ee9f0cc1bb3ec04b24e   #生成的clientID
+  clientSecret: d3379b0fc95af001102c846e79e5e63ac5e24739  #同上
   repo: nevermindzzt.github.io    #仓库名称
   owner: NevermindZZT    #github用户名
   admin: NevermindZZT
