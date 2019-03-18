@@ -41,7 +41,7 @@ tags:
 
 在工程路径的.vscode文件夹下打开c_cpp_properties.json文件，没有自己新建一个，内容配置如下：
 
-```json
+```python
 {
     "configurations": [
         {
@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
 此脚本需要结合VS Code的Task运行，通过配置Task，我们还需要匹配输出中的错误信息(编译错误)，实现在keil中，点击错误直接跳转到错误代码处，具体如何配置请参考VS Code的文档，这里给出我的Task
 
-```json
+```python
 {
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
 对于使用ARM Compiler 6编译的工程，build和rebuild中的problemMatcher应该配置为
 
-```json
+```python
 "problemMatcher": [
     {
         "owner": "c",
@@ -236,15 +236,15 @@ if __name__ == '__main__':
 
 > 编译输出:
 >
-> ![img_vscode_keil_complie.png](https://github.com/NevermindZZT/nevermindzzt.github.io/blob/master/img/img_vscode_keil_complie.png)
+> ![img_vscode_keil_complie.png](https://nevermindzzt.github.io/img/img_vscode_keil_complie.png)
 >
 > 有错误时输出：
 >
-> ![img_vscode_keil_complie_error.png](https://github.com/NevermindZZT/nevermindzzt.github.io/blob/master/img/img_vscode_keil_complie_error.png)
+> ![img_vscode_keil_complie_error.png](https://nevermindzzt.github.io/img/img_vscode_keil_complie_error.png)
 >
 > 错误匹配：
 >
-> ![img_vscode_keil_error_match.png](https://github.com/NevermindZZT/nevermindzzt.github.io/blob/master/img/img_vscode_keil_error_match.png)
+> ![img_vscode_keil_error_match.png](https://nevermindzzt.github.io/img/img_vscode_keil_error_match.png)
 
 # 调试
 
