@@ -236,15 +236,15 @@ if __name__ == '__main__':
 
 > 编译输出:
 >
-> ![编译](../img/img_vscode_keil_complie.png)
+> ![编译](img_vscode_keil_complie.png)
 >
 > 有错误时输出：
 >
-> ![编译错误](../img/img_vscode_keil_complie_error.png)
+> ![编译错误](img_vscode_keil_complie_error.png)
 >
 > 错误匹配：
 >
-> ![错误匹配](../img/img_vscode_keil_error_match.png)
+> ![错误匹配](img_vscode_keil_error_match.png)
 
 # 调试
 
