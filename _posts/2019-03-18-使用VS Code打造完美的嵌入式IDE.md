@@ -151,7 +151,7 @@ if __name__ == '__main__':
                     "owner": "c",
                     "fileLocation": ["relative", "${workspaceFolder}/src/MDK-ARM"],
                     "pattern": {
-                        "regexp": "^(.*)\\((\\d+)\\):\\s+(warning|error):\\s+#(.*):\\s+(.*)$",
+                        "regexp": "^(.*)\\((\\d+)\\):\\s+(warning|error):\\s+(.*):\\s+(.*)$",
                         "file": 1,
                         "line": 2,
                         "severity": 3,
@@ -177,7 +177,7 @@ if __name__ == '__main__':
                     "owner": "c",
                     "fileLocation": ["relative", "${workspaceFolder}/src/MDK-ARM"],
                     "pattern": {
-                        "regexp": "^(.*)\\((\\d+)\\):\\s+(warning|error):\\s+#(.*):\\s+(.*)$",
+                        "regexp": "^(.*)\\((\\d+)\\):\\s+(warning|error):\\s+(.*):\\s+(.*)$",
                         "file": 1,
                         "line": 2,
                         "severity": 3,
