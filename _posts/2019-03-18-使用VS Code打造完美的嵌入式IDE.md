@@ -248,9 +248,56 @@ if __name__ == '__main__':
 
 # 调试
 
-调试需要使用到Cortex-Debug插件，以及arm gcc工具链，这部分请参考Cortex-Debug的文档，说的比较详细，也没什么额外的内容，在这里我不说了
+调试需要使用到Cortex-Debug插件，以及arm gcc工具链，这部分可以参考Cortex-Debug的文档，说的比较详细
 
-不过由于我们使用的是keil进行编译，在使用arm gcc调试的时候，只能配置成attach模式，否则芯片会直接没反应，还需要继续研究
+首先安装Cortex-Debug插件和arm gcc工具链，然后配置好环境路径，如果使用Jlink调试，需要下载Jlink套件，安转好之后，找到`JLinkGDBServerCL.exe`这个程序，在VS Code的设置中添加`"cortex-debug.JLinkGDBServerPath": "C:/Program Files (x86)/SEGGER/JLink_V630f/JLinkGDBServerCL.exe"`，后面的路径是你自己的路径。
+
+如果使用STLink调试，需要下载stutil工具，在GitHub上搜索即可找到，同样配置好路径即可。
+
+以上步骤弄好之后，可以直接点击VS Code的调试按钮，此时会新建luanch.json文件，这个文件就是VS Code的调试配置文件，可参考我的文件进行配置
+
+```json
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug(JLINK)",
+            "cwd": "${workspaceRoot}",
+            "executable": "src/MDK-ARM/Objects/stm32_boot.axf",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "jlink",
+            "device": "STM32F407IG",
+            "svdFile": "C:/Program Files (x86)/keil/ARM/PACK/Keil/STM32F4xx_DFP/2.11.0/CMSIS/SVD/STM32F40x.svd",
+            "interface": "swd",
+            "ipAddress": null,
+            "serialNumber": null
+        },
+        {
+            "name": "Cortex Debug(ST-LINK)",
+            "cwd": "${workspaceRoot}",
+            "executable": "src/MDK-ARM/Objects/stm32_boot.axf",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "stutil",
+            "svdFile": "C:/Program Files (x86)/keil/ARM/PACK/Keil/STM32F4xx_DFP/2.11.0/CMSIS/SVD/STM32F40x.svd",
+            "device": "STM32F407IG",
+            "v1": false
+        }
+    ]
+}
+```
+
+注意其中几个需要修改的地方，`executable`修改为你的工程生成的目标文件，也就是工程的`.axf`文件，`svdFile`用于对MCU外设的监控，该文件可以在keil的安装路径中找到，可以参考我的路径去找
+
+配置完成后，再次点击调试按钮即可进行调试
+
+> ![img_vscode_keil_debug.png](https://nevermindzzt.github.io/img/img_vscode_keil_debug.png)
+
+相比keil自己的调试功能，VS Code还支持条件断点，可以设置命中条件，次数等，可以极大的方便调试
 
 # 总结
 
