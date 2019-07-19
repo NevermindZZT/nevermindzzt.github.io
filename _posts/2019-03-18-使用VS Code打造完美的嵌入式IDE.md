@@ -256,9 +256,9 @@ if __name__ == '__main__':
 
 以上步骤弄好之后，可以直接点击VS Code的调试按钮，此时会新建luanch.json文件，这个文件就是VS Code的调试配置文件，可参考我的文件进行配置
 
-```json
+```python
 {
-    // 使用 IntelliSense 了解相关属性。 
+    // 使用 IntelliSense 了解相关属性。
     // 悬停以查看现有属性的描述。
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
