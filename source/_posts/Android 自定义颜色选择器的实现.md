@@ -15,6 +15,8 @@ tags:
 
 某日，突然产生想法，给我自己做的纪念日的APP加一个主题色的功能，那自然就需要用到颜色选择器了，在网上搜索了一圈，没找到自己想要的，于是干脆就自己做一个吧。刚好最近也在研究Kotlin，于是就拿Kotlin写了一个简单的颜色选择器
 
+<!-- more -->
+
 先上效果图：
 
 ![img_android_color_picker.png](https://nevermindzzt.github.io/img/img_android_color_picker.png)
