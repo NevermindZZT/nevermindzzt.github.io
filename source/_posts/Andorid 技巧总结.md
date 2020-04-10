@@ -4,8 +4,9 @@ title:      Android 技巧总结
 subtitle:   
 date:       2019-10-21
 author:     Letter
-header-img:
+cover:      
 catalog:    true
+categories: Android
 tags: 
     - Android
 ---

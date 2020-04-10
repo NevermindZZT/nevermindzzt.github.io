@@ -4,8 +4,9 @@ title:      使用VS Code打造完美的嵌入式IDE
 subtitle:
 date:       2019-03-15
 author:     Letter
-header-img:
+cover:      https://s1.ax1x.com/2020/04/10/GIvYHx.png
 catalog:    true
+categories: 嵌入式
 tags: 
     - 嵌入式
     - STM32
@@ -238,15 +239,15 @@ if __name__ == '__main__':
 
 > 编译输出:
 >
-> ![img_vscode_keil_complie.png](https://nevermindzzt.github.io/img/img_vscode_keil_complie.png)
+> ![img_vscode_keil_complie.png](https://s1.ax1x.com/2020/04/10/GIvGuR.png)
 >
 > 有错误时输出：
 >
-> ![img_vscode_keil_complie_error.png](https://nevermindzzt.github.io/img/img_vscode_keil_complie_error.png)
+> ![img_vscode_keil_complie_error.png](https://s1.ax1x.com/2020/04/10/GIvUUK.png)
 >
 > 错误匹配：
 >
-> ![img_vscode_keil_error_match.png](https://nevermindzzt.github.io/img/img_vscode_keil_error_match.png)
+> ![img_vscode_keil_error_match.png](https://s1.ax1x.com/2020/04/10/GIvNE6.png)
 
 # 调试
 
@@ -297,7 +298,7 @@ if __name__ == '__main__':
 
 配置完成后，再次点击调试按钮即可进行调试
 
-> ![img_vscode_keil_debug.png](https://nevermindzzt.github.io/img/img_vscode_keil_debug.png)
+> ![img_vscode_keil_debug.png](https://s1.ax1x.com/2020/04/10/GIvYHx.png)
 
 相比keil自己的调试功能，VS Code还支持条件断点，可以设置命中条件，次数等，可以极大的方便调试
 

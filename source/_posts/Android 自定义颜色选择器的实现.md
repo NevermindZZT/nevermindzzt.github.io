@@ -4,8 +4,9 @@ title:      Android 自定义颜色选择器的实现
 subtitle:   Kotlin初探
 date:       2019-07-19
 author:     Letter
-header-img:
+cover:      https://s1.ax1x.com/2020/04/10/GIXGRJ.png
 catalog:    true
+categories: Android
 tags: 
     - Android
     - Kotlin
@@ -19,7 +20,7 @@ tags:
 
 先上效果图：
 
-![img_android_color_picker.png](https://nevermindzzt.github.io/img/img_android_color_picker.png)
+![img_android_color_picker.png](https://s1.ax1x.com/2020/04/10/GIXGRJ.png)
 
 ## 颜色盘
 

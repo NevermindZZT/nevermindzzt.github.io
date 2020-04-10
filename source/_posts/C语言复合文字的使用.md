@@ -4,8 +4,9 @@ title:      C语言复合文字的使用
 subtitle:
 date:       2019-04-03
 author:     Letter
-header-img:
+cover:      
 catalog:    true
+categories: C
 tags: 
     - C
 ---
