@@ -6,7 +6,7 @@ date:       2020-01-19
 author:     Letter
 cover:      https://s1.ax1x.com/2020/04/10/GoclY8.png
 catalog:    true
-categories: 嵌入式
+categories: letter shell
 tags: 
     - 嵌入式
     - STM32

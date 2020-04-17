@@ -6,7 +6,7 @@ date:       2018-07-15
 author:     Letter
 cover:      
 catalog:    true
-categories: 嵌入式
+categories: letter shell
 tags:
     - 嵌入式
     - STM32
