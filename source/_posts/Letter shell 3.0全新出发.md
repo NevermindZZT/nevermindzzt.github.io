@@ -155,7 +155,7 @@ letter shell支持支持定义整数，浮点数，指针形式的变量，定�
 
 ```C
 int testVar = 256;
-SHELL_CMD_VAR(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_VAR_INT), testVar, &testVar, var for test);
+SHELL_EXPORT_VAR(SHELL_CMD_PERMISSION(0)|SHELL_CMD_TYPE(SHELL_TYPE_VAR_INT), testVar, &testVar, var for test);
 ```
 
 其中，`SHELL_CMD_TYPE(SHELL_TYPE_VAR_INT)`表示这是一个`int`类型的变量，变量不是指针类型时，需要对变量取引用`&testVar`，相应的，支持的变量类型和类型定义宏如下：
