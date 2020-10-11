@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>STM32从原理入门(零)-起点 | Letter</title><meta name="description" content="STM32从原理入门(零)-起点"><meta name="keywords" content="嵌入式 STM32"><meta name="author" content="Letter"><meta name="copyright" content="Letter"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="crossorigin"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="STM32从原理入门(零)-起点"><meta name="twitter:description" content="STM32从原理入门(零)-起点"><meta name="twitter:image" content="https://s1.ax1x.com/2020/04/10/GoSLIP.jpg"><meta property="og:type" content="article"><meta property="og:title" content="STM32从原理入门(零)-起点"><meta property="og:url" content="http://nevermindzzt.github.io/2020/07/19/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E9%9B%B6)-%E8%B5%B7%E7%82%B9/"><meta property="og:site_name" content="Letter"><meta property="og:description" content="STM32从原理入门(零)-起点"><meta property="og:image" content="https://s1.ax1x.com/2020/04/10/GoSLIP.jpg"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '1'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css" ><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="http://nevermindzzt.github.io/2020/07/19/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E9%9B%B6)-%E8%B5%B7%E7%82%B9/"><link rel="prev" title="STM32从原理入门(一)-点灯(上篇)" href="http://nevermindzzt.github.io/2020/07/26/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E4%B8%80)-%E7%82%B9%E7%81%AF(%E4%B8%8A%E7%AF%87)/"><link rel="next" title="letter-shell代理函数解析" href="http://nevermindzzt.github.io/2020/04/17/letter-shell%E4%BB%A3%E7%90%86%E5%87%BD%E6%95%B0%E8%A7%A3%E6%9E%90/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-115327601-1', 'auto');
+ga('send', 'pageview');
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://xxx/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  bookmark: {
+    message_prev: 'Press',
+    message_next: 'to bookmark this page'
+  },
+  runtime_unit: 'days',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="Letter" type="application/atom+xml">
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="https://s1.ax1x.com/2020/04/10/GI7cM6.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">Articles</div><div class="length_num">12</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">Tags</div><div class="length_num">12</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">Categories</div><div class="length_num">5</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> About</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单片机、MCU、STM32"><span class="toc-number">2.</span> <span class="toc-text">单片机、MCU、STM32?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#怎么学"><span class="toc-number">3.</span> <span class="toc-text">怎么学</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#看什么资料"><span class="toc-number">4.</span> <span class="toc-text">看什么资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HAL库、标准库"><span class="toc-number">5.</span> <span class="toc-text">HAL库、标准库?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择什么IDE"><span class="toc-number">6.</span> <span class="toc-text">选择什么IDE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结语"><span class="toc-number">7.</span> <span class="toc-text">结语</span></a></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://s1.ax1x.com/2020/04/10/GoSLIP.jpg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Letter</a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> About</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">STM32从原理入门(零)-起点</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="Created 2020-07-19 18:18:00"><i class="fa fa-calendar" aria-hidden="true"></i> Created 2020-07-19</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="Updated 2020-10-08 17:03:35"><i class="fa fa-history" aria-hidden="true"></i> Updated 2020-10-08</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/STM32/">STM32</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>Post View:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>Comments:</span><a href="/2020/07/19/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E9%9B%B6)-%E8%B5%B7%E7%82%B9/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我从毕业工作到现在，已经整整两年了，和STM32打交道也已经有三年了，这期间，碰到的问题不少，解决的问题也很多，而且也体会到了使用STM32实实在在做产品开发，同时也有了自己的开源项目，要我自己评价的话，那就是对于STM32，对于嵌入式软件开发，算是入门了</p>
+<p>网上针对STM32的教程很多，非常优秀的教程也不少，但是，大多数教程，都只是在告诉你要怎么做，很少有教程会详细分析，为什么要这么做，我个人认为，知道为什么，要比只知道怎么做重要的太多，毕竟，你不可能永远都只用一种芯片，一套工具或者一套外设</p>
+<p>所以我希望通过自己的几篇文章，和大家分享一下自己这几年攒下来的知识，希望可以有效地帮助想学习相关知识的朋友，当然，文章中免不了会有一些错误，大家可以直接指出，一起交流</p>
+<h2 id="单片机、MCU、STM32"><a href="#单片机、MCU、STM32" class="headerlink" title="单片机、MCU、STM32?"></a>单片机、MCU、STM32?</h2><p>一开始学过51单片机的朋友可能会混淆一些概念，认为所谓的单片机就是指51，简单来说，一块包含处理器(CPU)，存储器(RAM和ROM)，包含IO和各种外设的芯片就可以叫做单片机，所以STM32也是单片机的一种，而MCU其实就是指的单片机</p>
+<p>STM32是意法半导体推出的基于arm cortex-m内核的MCU，因为其价格便宜，性能强大，外设丰富，现在很多产品都会有它的身影，同时网上资料，教程也特别丰富，入门门槛也不高，相对而言，现在还是很火的</p>
+<h2 id="怎么学"><a href="#怎么学" class="headerlink" title="怎么学"></a>怎么学</h2><p>实践是检验真理的唯一标准，要想学好STM32，动手是绝对少不了的，你不能一上来就抱着好几个G的教学视频，连芯片长什么样子都没见过，就直接把视频刷一遍。所以，请确保你至少有一块开发板，如果想直接了解更深的话，可以选择买一块核心板，买一些外部元件，自己用杜邦线连接或者直接自己画PCB，因为嵌入式开发从来都不是可以绝对的分为软件和硬件的。</p>
+<h2 id="看什么资料"><a href="#看什么资料" class="headerlink" title="看什么资料"></a>看什么资料</h2><p>芯片手册——了解一块芯片最直接的方式，芯片手册会介绍芯片的资源，会教你如何控制一块芯片，通过芯片手册，你还可以了解芯片一部分的内部结构，可以知道芯片是怎么运行的</p>
+<p>Cortex M3(M4)权威指南——这是任何一个使用Cortex M系列芯片的人，我都极力推荐一定要仔细看完的一本书，这本书详细介绍了Cortex M系列内核的设计以及使用</p>
+<h2 id="HAL库、标准库"><a href="#HAL库、标准库" class="headerlink" title="HAL库、标准库?"></a>HAL库、标准库?</h2><p>可能有部分朋友初学STM32的时候会疑惑，我该用HAL库还是用标准库？我的建议是，都不用</p>
+<p>如果你是抱着学习的目的，那我建议直接使用寄存器操作，这样可以让你理解更加透彻，当然，实际开发中，很少有不使用库直接操作寄存器的，学习过程也不可能一直只操作寄存器，但是，你需要理解，你使用的库它干了什么活，如果问题发生在库中，你有没有能力尽心分析并解决</p>
+<p>然后再说到HAL库和标准库，这个其实也没啥可纠结的了，ST已经不维护标准库了，新学习如果使用库的话毫无疑问是要选择HAL库</p>
+<h2 id="选择什么IDE"><a href="#选择什么IDE" class="headerlink" title="选择什么IDE"></a>选择什么IDE</h2><p>支持STM32开发的IDE有不少，主流的有keil，iar也有使用gcc加外部编辑器，trueStudio，platformIO等等，对于初学者而言，选择一个好用的IDE可能会使学习曲线更加平滑，因为不用理会工程配置，编译的各种问题</p>
+<p>但是，还是那句话，如果你是抱着学习的目的，不管选择什么IDE，我都建议你要弄清楚在你的程序开发过程中，IDE帮你做了哪些工作，我建议你要去了解IDE的各个选项代表的意义，去阅读IDE的手册，对于编译，链接这些过程，都要有了解</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>第一篇文章，主要介绍了几个概念，还有几个刚入门的朋友可能会问的问题，算是做一个大体的介绍吧，后面如果想到还有什么问题，会随时更新这篇文章</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Letter</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://nevermindzzt.github.io/2020/07/19/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E9%9B%B6)-%E8%B5%B7%E7%82%B9/">http://nevermindzzt.github.io/2020/07/19/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E9%9B%B6)-%E8%B5%B7%E7%82%B9/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F-STM32/">嵌入式 STM32</a></div><div class="post_share"><div class="social-share" data-image="https://s1.ax1x.com/2020/04/10/GoSbVI.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/07/26/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E4%B8%80)-%E7%82%B9%E7%81%AF(%E4%B8%8A%E7%AF%87)/"><img class="prev_cover lazyload" data-src="https://s1.ax1x.com/2020/04/10/GoSbVI.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">STM32从原理入门(一)-点灯(上篇)</div></div></a></div><div class="next-post pull_right"><a href="/2020/04/17/letter-shell%E4%BB%A3%E7%90%86%E5%87%BD%E6%95%B0%E8%A7%A3%E6%9E%90/"><img class="next_cover lazyload" data-src="https://s1.ax1x.com/2020/04/10/GIHHh9.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">letter-shell代理函数解析</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> Recommend</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/07/26/STM32从原理入门(一)-点灯(上篇)/" title="STM32从原理入门(一)-点灯(上篇)"><img class="relatedPosts_cover lazyload"data-src="https://s1.ax1x.com/2020/04/10/GoSbVI.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-26</div><div class="relatedPosts_title">STM32从原理入门(一)-点灯(上篇)</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> Comment</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '2ee9f0cc1bb3ec04b24e',
+  clientSecret: 'd3379b0fc95af001102c846e79e5e63ac5e24739',
+  repo: 'nevermindzzt.github.io',
+  owner: 'NevermindZZT',
+  admin: ['NevermindZZT'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: false,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By Letter</div><div class="framework-info"><span>Driven </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="Read Mode"></i><i class="fa fa-plus" id="font_plus" title="Increase font size"></i><i class="fa fa-minus" id="font_minus" title="Decrease font size"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="Traditional Chinese and Simplified Chinese Conversion" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="Dark Mode"></i></div><div id="rightside-config-show"><div id="rightside_config" title="Setting"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="Scroll to comment"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="Table of Contents" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="Back to top" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js" ></script><script src="/js/utils.js" ></script><script src="/js/main.js" ></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="canvas_nest" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="/js/third-party/canvas-nest.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><script src="/js/third-party/click_heart.js"></script></body></html>
