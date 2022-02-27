@@ -3,7 +3,6 @@ title:      STM32从原理入门(零)-起点
 date:       2020-07-19 18:18:00
 subtitle:   开发常见问题解答
 author:     Letter
-cover:      
 catalog:    true
 categories: STM32
 tags:       嵌入式

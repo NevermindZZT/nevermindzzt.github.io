@@ -3,7 +3,6 @@ title:      Android 音频框架分析
 date:       2020-10-15 10:45:00
 subtitle:   
 author:     Letter
-cover:    
 catalog:    true
 categories: Android
 tags:       Android

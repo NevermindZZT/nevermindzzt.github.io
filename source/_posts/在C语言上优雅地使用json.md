@@ -4,7 +4,6 @@ title:      在C语言上优雅地使用json
 subtitle:   CSON原理解析
 date:       2019-08-29
 author:     Letter
-cover:      
 catalog:    true
 categories: 嵌入式
 tags: 

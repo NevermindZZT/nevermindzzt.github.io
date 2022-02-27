@@ -3,7 +3,6 @@ title:      letter-shell代理函数解析
 date:       2020-04-17 08:32:45
 subtitle:   letter shell实现任意参数的解析
 author:     Letter
-cover:      
 catalog:    true
 categories: letter shell
 tags:       嵌入式

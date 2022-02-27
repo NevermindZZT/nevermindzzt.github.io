@@ -3,7 +3,6 @@ title:      STM32从原理入门(一)-点灯(上篇)
 date:       2020-07-26 15:07:00
 subtitle:   嵌入式软件的Hello World
 author:     Letter
-cover:      
 catalog:    true
 categories: STM32
 tags:       嵌入式

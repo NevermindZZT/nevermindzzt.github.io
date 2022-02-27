@@ -4,7 +4,6 @@ title:      在嵌入式系统中实现简单的shell
 subtitle:   在STM32上使用shell
 date:       2018-07-15
 author:     Letter
-cover:      
 catalog:    true
 categories: letter shell
 tags:
