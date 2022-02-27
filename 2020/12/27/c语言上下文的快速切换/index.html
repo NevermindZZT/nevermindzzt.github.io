@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>c语言上下文的快速切换 | Letter</title><meta name="keywords" content="嵌入式,STM32,C"><meta name="author" content="Letter"><meta name="copyright" content="Letter"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言我们通常认为，在中断中，不能执行耗时的操作，否则会影响系统的稳定性，尤其对于嵌入式编程。对于带操作系统的程序而言，可以通过操作系统的调度，将中断处理分成两个部分，耗时的操作可以放到线程中去执行，但是对于没有操作系统的情况，又应该如何处理呢 比较常见的，我们可能会定义一些全局变量，作为flag，然后在mainloop中不停的判断这些flag，再在中断中修改这些flag，最后在mainloop中执">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c语言上下文的快速切换">
+<meta property="og:url" content="http://nevermindzzt.github.io/2020/12/27/c%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%BF%AB%E9%80%9F%E5%88%87%E6%8D%A2/index.html">
+<meta property="og:site_name" content="Letter">
+<meta property="og:description" content="前言我们通常认为，在中断中，不能执行耗时的操作，否则会影响系统的稳定性，尤其对于嵌入式编程。对于带操作系统的程序而言，可以通过操作系统的调度，将中断处理分成两个部分，耗时的操作可以放到线程中去执行，但是对于没有操作系统的情况，又应该如何处理呢 比较常见的，我们可能会定义一些全局变量，作为flag，然后在mainloop中不停的判断这些flag，再在中断中修改这些flag，最后在mainloop中执">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta property="article:published_time" content="2020-12-27T06:14:23.000Z">
+<meta property="article:modified_time" content="2022-02-27T10:53:36.664Z">
+<meta property="article:author" content="Letter">
+<meta property="article:tag" content="嵌入式">
+<meta property="article:tag" content="STM32">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://nevermindzzt.github.io/2020/12/27/c%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%BF%AB%E9%80%9F%E5%88%87%E6%8D%A2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'c语言上下文的快速切换',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-02-27 18:53:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="Letter" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">15</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">12</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Letter</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">c语言上下文的快速切换</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2020-12-27T06:14:23.000Z" title="Created 2020-12-27 14:14:23">2020-12-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2022-02-27T10:53:36.664Z" title="Updated 2022-02-27 18:53:36">2022-02-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/C/">C</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="c语言上下文的快速切换"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们通常认为，在中断中，不能执行耗时的操作，否则会影响系统的稳定性，尤其对于嵌入式编程。对于带操作系统的程序而言，可以通过操作系统的调度，将中断处理分成两个部分，耗时的操作可以放到线程中去执行，但是对于没有操作系统的情况，又应该如何处理呢</p>
+<p>比较常见的，我们可能会定义一些全局变量，作为<code>flag</code>，然后在<code>mainloop</code>中不停的判断这些<code>flag</code>，再在中断中修改这些<code>flag</code>，最后在<code>mainloop</code>中执行具体的逻辑，但是这样，无疑会增加耦合，增加程序维护成本</p>
+<h2 id="cpost"><a href="#cpost" class="headerlink" title="cpost"></a>cpost</h2><p><a target="_blank" rel="noopener" href="https://github.com/NevermindZZT/cpost">cpost</a>正是应用在这种情况下的一个简单但又十分方便的工具，它可以特别方便的进行上下文的切换，减少模块耦合</p>
+<p><code>cpost</code>借鉴的Android的handler机制，通过在<code>mainloop</code>中跑一个任务，然后在其他地方，可以是中断，也可以是模块逻辑中，直接抛出需要执行的函数，使其脱离调用处的上下文，运行在<code>mainloop</code>中。<code>cpost</code>还支持延迟处理，可以指定函数在抛出后多久执行</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p><code>cpost</code>的使用十分简单，这里以使用在嵌入式无操作系统中为例，主要用作中断延迟处理的情况</p>
+<ol>
+<li><p>配置系统tick</p>
+<p> 配置<code>cpost.h</code>中的宏<code>CPOST_GET_TICK()</code>，配置成获取系统tick，以stm32 hal为例</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>     CPOST_GET_TICK()            HAL_GetTick()</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置处理进程</p>
+<p> 在<code>mainloop</code>调用<code>cpostProcess</code>函数</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        cpostProcess();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>抛出任务</p>
+<p> 在中断等需要进行上下文切换的地方调用<code>cpsot</code>接口，使其在<code>mainloop</code>中运行</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cpost(intHandler);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h2><p><code>cpost</code>的原理其实很简单，其代码量也十分少，总共加起来就只有几十行代码，<code>cpost</code>维护了一个而全局的数组</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CpostHandler cposhHandlers[CPOST_MAX_HANDLER_SIZE] = &#123;<span class="number">0</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其中，数组的每一个元素表示包含了需要执行的函数和参数，当调用<code>cpost</code>接口时，被post的函数和参数会被保存在这个数组中，然后<code>mainloop</code>中运行的<code>cpostProcess</code>函数会遍历这个数组，当满足条件时，执行对应的函数，从而达到上下文切换的目的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">cpostProcess</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; CPOST_MAX_HANDLER_SIZE; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (cposhHandlers[i].handler)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (cposhHandlers[i].time == <span class="number">0</span> || CPOST_GET_TICK() &gt;= cposhHandlers[i].time)</span><br><span class="line">            &#123;</span><br><span class="line">                cposhHandlers[i].handler(cposhHandlers[i].param);</span><br><span class="line">                cposhHandlers[i].handler = <span class="literal">NULL</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实，cpost的方式，和一开始提到的使用全局的flag进行上下文切换的方法很像，只不过，cpost通过一个数组的维护和直接post函数的方式，省去了维护flag的成本，也不需要将需要执行的函数耦合到mianloop中，从而变得简单易用</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Letter</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://nevermindzzt.github.io/2020/12/27/c%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%BF%AB%E9%80%9F%E5%88%87%E6%8D%A2/">http://nevermindzzt.github.io/2020/12/27/c%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%BF%AB%E9%80%9F%E5%88%87%E6%8D%A2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><a class="post-meta__tags" href="/tags/STM32/">STM32</a><a class="post-meta__tags" href="/tags/C/">C</a></div><div class="post_share"><div class="social-share" data-image="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/12/20/C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9D%97%E5%8C%96%E7%BC%96%E7%A8%8B%E7%9A%84%E5%AE%8C%E7%BE%8E%E8%A7%A3%E8%80%A6/"><img class="next-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">C语言模块化编程的完美解耦</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2020/01/19/Letter%20shell%203.0%E5%85%A8%E6%96%B0%E5%87%BA%E5%8F%91/" title="Letter shell 3.0 全新出发"><img class="cover" src="https://s1.ax1x.com/2020/04/10/GoclY8.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-19</div><div class="title">Letter shell 3.0 全新出发</div></div></a></div><div><a href="/2019/08/29/%E5%9C%A8C%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8json/" title="在C语言上优雅地使用json"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-08-29</div><div class="title">在C语言上优雅地使用json</div></div></a></div><div><a href="/2020/12/20/C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9D%97%E5%8C%96%E7%BC%96%E7%A8%8B%E7%9A%84%E5%AE%8C%E7%BE%8E%E8%A7%A3%E8%80%A6/" title="C语言模块化编程的完美解耦"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-20</div><div class="title">C语言模块化编程的完美解耦</div></div></a></div><div><a href="/2018/07/15/%E5%9C%A8%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84shell/" title="在嵌入式系统中实现简单的shell"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-07-15</div><div class="title">在嵌入式系统中实现简单的shell</div></div></a></div><div><a href="/2019/03/15/%E4%BD%BF%E7%94%A8VS%20Code%E6%89%93%E9%80%A0%E5%AE%8C%E7%BE%8E%E7%9A%84%E5%B5%8C%E5%85%A5%E5%BC%8FIDE/" title="使用VS Code打造完美的嵌入式IDE"><img class="cover" src="https://s1.ax1x.com/2020/04/10/GIvYHx.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-03-15</div><div class="title">使用VS Code打造完美的嵌入式IDE</div></div></a></div><div><a href="/2018/04/07/%E4%B8%80%E7%A7%8D%E4%B8%8D%E4%BE%9D%E8%B5%96%E8%AE%A1%E6%97%B6%E5%99%A8%E7%9A%84%E9%94%AE%E7%9B%98%E9%95%BF%E6%8C%89%EF%BC%8C%E5%8F%8C%E5%87%BB%E5%AE%9E%E7%8E%B0/" title="一种不依赖计时器的键盘长按，双击实现"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-04-07</div><div class="title">一种不依赖计时器的键盘长按，双击实现</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Letter</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">15</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">12</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cpost"><span class="toc-number">2.</span> <span class="toc-text">cpost</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90"><span class="toc-number">4.</span> <span class="toc-text">原理解析</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2020/12/27/c%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%BF%AB%E9%80%9F%E5%88%87%E6%8D%A2/" title="c语言上下文的快速切换"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="c语言上下文的快速切换"/></a><div class="content"><a class="title" href="/2020/12/27/c%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%BF%AB%E9%80%9F%E5%88%87%E6%8D%A2/" title="c语言上下文的快速切换">c语言上下文的快速切换</a><time datetime="2020-12-27T06:14:23.000Z" title="Created 2020-12-27 14:14:23">2020-12-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/20/C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9D%97%E5%8C%96%E7%BC%96%E7%A8%8B%E7%9A%84%E5%AE%8C%E7%BE%8E%E8%A7%A3%E8%80%A6/" title="C语言模块化编程的完美解耦"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C语言模块化编程的完美解耦"/></a><div class="content"><a class="title" href="/2020/12/20/C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9D%97%E5%8C%96%E7%BC%96%E7%A8%8B%E7%9A%84%E5%AE%8C%E7%BE%8E%E8%A7%A3%E8%80%A6/" title="C语言模块化编程的完美解耦">C语言模块化编程的完美解耦</a><time datetime="2020-12-20T05:57:02.000Z" title="Created 2020-12-20 13:57:02">2020-12-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/10/15/Android%20%E9%9F%B3%E9%A2%91%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/" title="Android 音频框架分析"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Android 音频框架分析"/></a><div class="content"><a class="title" href="/2020/10/15/Android%20%E9%9F%B3%E9%A2%91%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/" title="Android 音频框架分析">Android 音频框架分析</a><time datetime="2020-10-15T02:45:00.000Z" title="Created 2020-10-15 10:45:00">2020-10-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/07/26/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E4%B8%80)-%E7%82%B9%E7%81%AF(%E4%B8%8A%E7%AF%87)/" title="STM32从原理入门(一)-点灯(上篇)"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32从原理入门(一)-点灯(上篇)"/></a><div class="content"><a class="title" href="/2020/07/26/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E4%B8%80)-%E7%82%B9%E7%81%AF(%E4%B8%8A%E7%AF%87)/" title="STM32从原理入门(一)-点灯(上篇)">STM32从原理入门(一)-点灯(上篇)</a><time datetime="2020-07-26T07:07:00.000Z" title="Created 2020-07-26 15:07:00">2020-07-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/07/19/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E9%9B%B6)-%E8%B5%B7%E7%82%B9/" title="STM32从原理入门(零)-起点"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32从原理入门(零)-起点"/></a><div class="content"><a class="title" href="/2020/07/19/STM32%E4%BB%8E%E5%8E%9F%E7%90%86%E5%85%A5%E9%97%A8(%E9%9B%B6)-%E8%B5%B7%E7%82%B9/" title="STM32从原理入门(零)-起点">STM32从原理入门(零)-起点</a><time datetime="2020-07-19T10:18:00.000Z" title="Created 2020-07-19 18:18:00">2020-07-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Letter</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
