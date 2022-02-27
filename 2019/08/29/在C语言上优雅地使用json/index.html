@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>在C语言上优雅地使用json | Letter</title><meta name="keywords" content="嵌入式,STM32,C,json"><meta name="author" content="Letter"><meta name="copyright" content="Letter"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言json是目前最为流行的文本数据传输格式，特别是在网络通信上广泛应用，随着物联网的兴起，在嵌入式设备上，也需要开始使用json进行数据传输，那么，如何快速简洁地用C语言进行json的序列化和反序列化呢">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在C语言上优雅地使用json">
+<meta property="og:url" content="http://nevermindzzt.github.io/2019/08/29/%E5%9C%A8C%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8json/index.html">
+<meta property="og:site_name" content="Letter">
+<meta property="og:description" content="前言json是目前最为流行的文本数据传输格式，特别是在网络通信上广泛应用，随着物联网的兴起，在嵌入式设备上，也需要开始使用json进行数据传输，那么，如何快速简洁地用C语言进行json的序列化和反序列化呢">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta property="article:published_time" content="2019-08-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-07-07T04:56:46.000Z">
+<meta property="article:author" content="Letter">
+<meta property="article:tag" content="嵌入式">
+<meta property="article:tag" content="STM32">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="json">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://nevermindzzt.github.io/2019/08/29/%E5%9C%A8C%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8json/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '在C语言上优雅地使用json',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-07-07 12:56:46'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="Letter" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">11</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Letter</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">在C语言上优雅地使用json</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2019-08-28T16:00:00.000Z" title="Created 2019-08-29 00:00:00">2019-08-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2020-07-07T04:56:46.000Z" title="Updated 2020-07-07 12:56:46">2020-07-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="在C语言上优雅地使用json"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>json是目前最为流行的文本数据传输格式，特别是在网络通信上广泛应用，随着物联网的兴起，在嵌入式设备上，也需要开始使用json进行数据传输，那么，如何快速简洁地用C语言进行json的序列化和反序列化呢</p>
+<span id="more"></span>
+
+<p>当前，应用最广泛的C语言json解析库当属<a target="_blank" rel="noopener" href="https://github.com/kbranigan/cJSON">cJSON</a>，但是，使用cJSON读json进行序列化和反序列化，需要根据key一个一个进行处理，会导致代码冗余，逻辑性不强，哪有没有更好的方法呢</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>在Android平台，一般会使用<a target="_blank" rel="noopener" href="https://github.com/google/gson">gson</a>等工具解析json，这些工具将json直接映射成对象，在C语言上使用对象的概念，我们需要借助结构体，然而，最大的问题在于，C语言没有高级语言具有的反射机制，直接从json映射到结构体对象几乎是不可能的</p>
+<p>怎么解决呢，既然C语言没有反射机制，那么我们可以自己定义一套类似于反射的机制，这里我将其称之为结构体数据模型，在数据模型中，我们需要准确地描述结构体的特征，包括结构体各成员的名称，类型，在结构体中的偏移，有了这些，我们可以在解析josn的时候，将解析得到的数据直接写入到对应的内存里面去，或者是在序列化的时候，直接从对应的内存中读取数据，进行处理</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p><a target="_blank" rel="noopener" href="https://github.com/NevermindZZT/cson">CSON</a>正是采用上面说到的思路，使用数据模型对结构体进行描述，然后基于cJSON，根据数据模型进行解析，将解析得到的数据直接写入到对应的内存区域，从而实现从json到结构体对象的映射</p>
+<p>CSON最基本的数据模型定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">cson_model</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    CsonType type;                      <span class="comment">/**&lt; 数据类型 */</span></span><br><span class="line">    <span class="type">char</span> *key;                          <span class="comment">/**&lt; 元素键值 */</span></span><br><span class="line">    <span class="type">short</span> offset;                       <span class="comment">/**&lt; 元素偏移 */</span></span><br><span class="line">&#125; CsonModel;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>type</code>描述结构体成员的数据类型，<code>key</code>描述该成员在json中对应的字段，<code>offset</code>描述该结构体成员在结构体中的偏移，CSON在解析json的时候，根据<code>type</code>调用相应的cJSON API并传递<code>key</code>作为参数，得到解析出的数据，然后根据<code>offset</code>将数据写入到对应的内存空间</p>
+<p>比如说这样一个结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">project</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line">    <span class="type">char</span> *name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该结构体包含两个成员，对于成员<code>id</code>，我们使用数据模型对其进行描述<code>&#123;.type=CSON_TYPE_CHAR, key=&quot;id&quot;, offset=0&#125;</code>，对于结构体的每个成员，都进行数据模型的定义，就可以得到一个完整的结构体数据模型，CSON会根据这个模型，进行解析</p>
+<p>因为是通过直接写内存的方式，所以在写不同类型的量到内存中时，会多次用到强制转型，导致CSON中赋值的代码都类似于<code>*(int *)((int)obj + model[i].offset) = (int)csonDecodeNumber(json, model[i].key);</code></p>
+<p>当然，上面说到的数据模型，只适用于基本数据类型的数据，对于子结构体，链表，数组等，需要对数据模型的定义进行扩充，有兴趣的朋友可以直接阅读CSON源码</p>
+<h2 id="CSON使用实例"><a href="#CSON使用实例" class="headerlink" title="CSON使用实例"></a>CSON使用实例</h2><h3 id="声明结构体"><a href="#声明结构体" class="headerlink" title="声明结构体"></a>声明结构体</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 项目结构体 */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">project</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line">    <span class="type">char</span> *name;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 仓库结构体 */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">hub</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line">    <span class="type">char</span> *user;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">project</span> *<span class="title">cson</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="定义数据模型"><a href="#定义数据模型" class="headerlink" title="定义数据模型"></a>定义数据模型</h3><p>对每一个需要使用cson的结构体，都需要定义相对应的数据模型</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 项目结构体数据模型 */</span></span><br><span class="line">CsonModel projectModel[] =</span><br><span class="line">&#123;</span><br><span class="line">    CSON_MODEL_OBJ(<span class="keyword">struct</span> project),</span><br><span class="line">    CSON_MODEL_INT(<span class="keyword">struct</span> project, id),</span><br><span class="line">    CSON_MODEL_STRING(<span class="keyword">struct</span> project, name),</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 仓库结构体数据模型 */</span></span><br><span class="line">CsonModel hubModel[] =</span><br><span class="line">&#123;</span><br><span class="line">    CSON_MODEL_OBJ(<span class="keyword">struct</span> hub),</span><br><span class="line">    CSON_MODEL_INT(<span class="keyword">struct</span> hub, id),</span><br><span class="line">    CSON_MODEL_STRING(<span class="keyword">struct</span> hub, user),</span><br><span class="line">    CSON_MODEL_STRUCT(<span class="keyword">struct</span> hub, cson, projectModel, <span class="keyword">sizeof</span>(projectModel)/<span class="keyword">sizeof</span>(CsonModel))</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用CSON解析"><a href="#使用CSON解析" class="headerlink" title="使用CSON解析"></a>使用CSON解析</h3><p>只需要定义好数据模型，就可以使用CSON读json进行序列化和反序列化</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">csonDemo</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> *jsonDemo = <span class="string">&quot;&#123;\&quot;id\&quot;: 1, \&quot;user\&quot;: \&quot;Letter\&quot;, \&quot;cson\&quot;: &#123;\&quot;id\&quot;: 2, \&quot;name\&quot;: \&quot;cson\&quot;&#125;&#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 解析json */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">hub</span> *<span class="title">pHub</span> =</span> csonDecode(jsonDemo, hubModel, <span class="keyword">sizeof</span>(hubModel)/<span class="keyword">sizeof</span>(CsonModel));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hub: id: %d, user: %s, project id: %d, project name: %s\r\n&quot;</span>,</span><br><span class="line">        pHub-&gt;id, pHub-&gt;user, pHub-&gt;cson-&gt;id, pHub-&gt;cson-&gt;name);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 序列化对象 */</span></span><br><span class="line">    <span class="type">char</span> *formatJson = csonEncodeFormatted(pHub, hubModel, <span class="keyword">sizeof</span>(hubModel)/<span class="keyword">sizeof</span>(CsonModel));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;format json: %s\r\n&quot;</span>, formatJson);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 释放结构体对象 */</span></span><br><span class="line">    csonFree(pHub, hubModel, <span class="keyword">sizeof</span>(hubModel)/<span class="keyword">sizeof</span>(CsonModel));</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 释放序列化生成的json字符串 */</span></span><br><span class="line">    csonFreeJson(formatJson);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hub: id: 1, user: Letter, project id: 2, project name: cson</span><br><span class="line">format json: &#123;</span><br><span class="line">        &quot;id&quot;:   1,</span><br><span class="line">        &quot;user&quot;: &quot;Letter&quot;,</span><br><span class="line">        &quot;cson&quot;: &#123;</span><br><span class="line">                &quot;id&quot;:   2,</span><br><span class="line">                &quot;name&quot;: &quot;cson&quot;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，无论是解析json，还是序列化结构体到json，在使用CSON的情况下，都只需要一行代码就可以解决，同样的操作，在使用原生cJSON的情况下，你可能需要多次判断，解析元素</p>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><p>CSON项目已经发布到Github，<a target="_blank" rel="noopener" href="https://github.com/NevermindZZT/cson">点击查看</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Letter</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://nevermindzzt.github.io/2019/08/29/%E5%9C%A8C%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8json/">http://nevermindzzt.github.io/2019/08/29/%E5%9C%A8C%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8json/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><a class="post-meta__tags" href="/tags/STM32/">STM32</a><a class="post-meta__tags" href="/tags/C/">C</a><a class="post-meta__tags" href="/tags/json/">json</a></div><div class="post_share"><div class="social-share" data-image="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2019/10/21/Andorid%20%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">Android 技巧总结</div></div></a></div><div class="next-post pull-right"><a href="/2019/07/19/Android%20%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A2%9C%E8%89%B2%E9%80%89%E6%8B%A9%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0/"><img class="next-cover" src="https://s1.ax1x.com/2020/04/10/GIXGRJ.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Android 自定义颜色选择器的实现</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2020/01/19/Letter%20shell%203.0%E5%85%A8%E6%96%B0%E5%87%BA%E5%8F%91/" title="Letter shell 3.0 全新出发"><img class="cover" src="https://s1.ax1x.com/2020/04/10/GoclY8.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-19</div><div class="title">Letter shell 3.0 全新出发</div></div></a></div><div><a href="/2018/07/15/%E5%9C%A8%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84shell/" title="在嵌入式系统中实现简单的shell"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-07-15</div><div class="title">在嵌入式系统中实现简单的shell</div></div></a></div><div><a href="/2019/03/15/%E4%BD%BF%E7%94%A8VS%20Code%E6%89%93%E9%80%A0%E5%AE%8C%E7%BE%8E%E7%9A%84%E5%B5%8C%E5%85%A5%E5%BC%8FIDE/" title="使用VS Code打造完美的嵌入式IDE"><img class="cover" src="https://s1.ax1x.com/2020/04/10/GIvYHx.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-03-15</div><div class="title">使用VS Code打造完美的嵌入式IDE</div></div></a></div><div><a href="/2018/04/07/%E4%B8%80%E7%A7%8D%E4%B8%8D%E4%BE%9D%E8%B5%96%E8%AE%A1%E6%97%B6%E5%99%A8%E7%9A%84%E9%94%AE%E7%9B%98%E9%95%BF%E6%8C%89%EF%BC%8C%E5%8F%8C%E5%87%BB%E5%AE%9E%E7%8E%B0/" title="一种不依赖计时器的键盘长按，双击实现"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2018-04-07</div><div class="title">一种不依赖计时器的键盘长按，双击实现</div></div></a></div><div><a href="/2019/04/03/C%E8%AF%AD%E8%A8%80%E5%A4%8D%E5%90%88%E6%96%87%E5%AD%97%E7%9A%84%E4%BD%BF%E7%94%A8/" title="C语言复合文字的使用"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-04-03</div><div class="title">C语言复合文字的使用</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Letter</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">11</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSON%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B"><span class="toc-number">4.</span> <span class="toc-text">CSON使用实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E7%BB%93%E6%9E%84%E4%BD%93"><span class="toc-number">4.1.</span> <span class="toc-text">声明结构体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">4.2.</span> <span class="toc-text">定义数据模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8CSON%E8%A7%A3%E6%9E%90"><span class="toc-number">4.3.</span> <span class="toc-text">使用CSON解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80"><span class="toc-number">5.</span> <span class="toc-text">项目地址</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2020/10/15/Android%20%E9%9F%B3%E9%A2%91%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/" title="Android 音频框架分析"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Android 音频框架分析"/></a><div class="content"><a class="title" href="/2020/10/15/Android%20%E9%9F%B3%E9%A2%91%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/" title="Android 音频框架分析">Android 音频框架分析</a><time datetime="2020-10-15T02:45:00.000Z" title="Created 2020-10-15 10:45:00">2020-10-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/04/17/letter-shell%E4%BB%A3%E7%90%86%E5%87%BD%E6%95%B0%E8%A7%A3%E6%9E%90/" title="letter-shell代理函数解析"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="letter-shell代理函数解析"/></a><div class="content"><a class="title" href="/2020/04/17/letter-shell%E4%BB%A3%E7%90%86%E5%87%BD%E6%95%B0%E8%A7%A3%E6%9E%90/" title="letter-shell代理函数解析">letter-shell代理函数解析</a><time datetime="2020-04-17T00:32:45.000Z" title="Created 2020-04-17 08:32:45">2020-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/01/19/Letter%20shell%203.0%E5%85%A8%E6%96%B0%E5%87%BA%E5%8F%91/" title="Letter shell 3.0 全新出发"><img src="https://s1.ax1x.com/2020/04/10/GoclY8.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Letter shell 3.0 全新出发"/></a><div class="content"><a class="title" href="/2020/01/19/Letter%20shell%203.0%E5%85%A8%E6%96%B0%E5%87%BA%E5%8F%91/" title="Letter shell 3.0 全新出发">Letter shell 3.0 全新出发</a><time datetime="2020-01-18T16:00:00.000Z" title="Created 2020-01-19 00:00:00">2020-01-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2019/10/21/Andorid%20%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93/" title="Android 技巧总结"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Android 技巧总结"/></a><div class="content"><a class="title" href="/2019/10/21/Andorid%20%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93/" title="Android 技巧总结">Android 技巧总结</a><time datetime="2019-10-20T16:00:00.000Z" title="Created 2019-10-21 00:00:00">2019-10-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2019/08/29/%E5%9C%A8C%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8json/" title="在C语言上优雅地使用json"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="在C语言上优雅地使用json"/></a><div class="content"><a class="title" href="/2019/08/29/%E5%9C%A8C%E8%AF%AD%E8%A8%80%E4%B8%8A%E4%BC%98%E9%9B%85%E5%9C%B0%E4%BD%BF%E7%94%A8json/" title="在C语言上优雅地使用json">在C语言上优雅地使用json</a><time datetime="2019-08-28T16:00:00.000Z" title="Created 2019-08-29 00:00:00">2019-08-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Letter</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
