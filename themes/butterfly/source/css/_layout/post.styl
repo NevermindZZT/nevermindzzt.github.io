@@ -1,17 +1,121 @@
-#article-container
-  if hexo-config('beautify.enable')
-    headStyle(fontsize)
-      padding-left: unit(fontsize + .4, 'rem')
+beautify()
+  headStyle(fontsize)
+    padding-left: unit(fontsize + 12, 'px')
 
-      code
-        font-size: unit(fontsize, 'rem')
+    &:before
+      margin-left: unit((-(fontsize + 6)), 'px')
+      font-size: unit(fontsize, 'px')
 
+    &:hover
+      padding-left: unit(fontsize + 18, 'px')
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6
+    transition: all .2s ease-out
+
+    &:before
+      position: absolute
+      top: calc(50% - 7px)
+      color: $title-prefix-icon-color
+      content: $title-prefix-icon
+      line-height: 1
+      transition: all .2s ease-out
+      @extend .fontawesomeIcon
+
+    &:hover
       &:before
-        margin-left: unit((-(fontsize + .2)), 'rem')
-        font-size: unit(fontsize, 'rem')
+        color: $light-blue
+
+  h1
+    headStyle(20)
+
+  h2
+    headStyle(18)
+
+  h3
+    headStyle(16)
+
+  h4
+    headStyle(14)
+
+  h5
+    headStyle(12)
+
+  h6
+    headStyle(12)
+
+  ol,
+  ul
+    p
+      margin: 0 0 8px
+
+  li
+    &::marker
+      color: $light-blue
+      font-weight: 600
+      font-size: 1.05em
+
+    &:hover
+      &::marker
+        color: var(--pseudo-hover)
+
+  ul > li
+    list-style-type: circle
+
+#article-container
+  word-wrap: break-word
+  overflow-wrap: break-word
+
+  a
+    color: $theme-link-color
+
+    &:hover
+      text-decoration: underline
+
+  img
+    display: block
+    margin: 0 auto 20px
+    max-width: 100%
+    transition: filter 375ms ease-in .2s
+
+  p
+    margin: 0 0 16px
+
+  iframe
+    margin: 0 0 20px
+
+  kbd
+    margin: 0 3px
+    padding: 3px 5px
+    border: 1px solid #b4b4b4
+    border-radius: 3px
+    background-color: #f8f8f8
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25), 0 2px 1px 0 rgba(255, 255, 255, .6) inset
+    color: #34495e
+    white-space: nowrap
+    font-weight: 600
+    font-size: .9em
+    font-family: Monaco, 'Ubuntu Mono', monospace
+    line-height: 1em
+
+  if hexo-config('anchor')
+    a.headerlink
+      &:after
+        @extend .fontawesomeIcon
+        float: right
+        color: var(--headline-presudo)
+        content: '\f0c1'
+        font-size: .95em
+        opacity: 0
+        transition: all .3s
 
       &:hover
-        padding-left: unit(fontsize + .6, 'rem')
+        &:after
+          color: var(--pseudo-hover)
 
     h1,
     h2,
@@ -19,223 +123,34 @@
     h4,
     h5,
     h6
-      cursor: pointer
-      transition: all .2s ease-out
-
-      &:before
-        position: absolute
-        top: calc(50% - .35rem)
-        color: $title-prefix-icon-color
-        content: $title-prefix-icon
-        font-style: normal
-        font-variant: normal
-        line-height: 1
-        transition: all .2s ease-out
-        text-rendering: auto
-        -webkit-font-smoothing: antialiased
-
-        if hexo-config('fontawesome_v5') && hexo-config('fontawesome_v5.enable')
-          font-weight: 600
-          font-family: 'Font Awesome 5 Free'
-        else
-          font-weight: normal
-          font-family: FontAwesome
-
       &:hover
-        &:before
-          color: $light-blue
+        a.headerlink
+          &:after
+            opacity: 1
 
-    h1
-      headStyle(1)
-
-    h2
-      headStyle(.9)
-
-    h3
-      headStyle(.8)
-
-    h4
-      headStyle(.7)
-
-    h5
-      headStyle(.6)
-
-    h6
-      headStyle(.6)
-
+  ol,
+  ul
     ol,
     ul
-      margin-top: .4rem
-      padding: 0 0 0 .8rem
-      list-style: none
-      counter-reset: li
+      padding-left: 20px
 
-      p
-        margin: 0 0 .5rem
+    li
+      margin: 4px 0
 
-      ol,
-      ul
-        padding-left: .5rem
+    p
+      margin: 0 0 8px
 
-      li
-        position: relative
-        margin: .2rem 0
-        padding: .1rem .5rem .1rem 1.5rem
+  if hexo-config('beautify.enable')
+    if hexo-config('beautify.field') == 'site'
+      beautify()
+    else if hexo-config('beautify.field') == 'post'
+      &.post-content
+        beautify()
 
-        &:hover
-          &:before
-            transform: rotate(360deg)
+  > :last-child
+    margin-bottom: 0 !important
 
-        &:before
-          position: absolute
-          top: 0
-          left: 0
-          background: $light-blue
-          color: $card-bg
-          cursor: pointer
-          transition: all .3s ease-out
-
-    ol
-      > li
-        &:before
-          margin-top: .2rem
-          width: w = 1.2rem
-          height: h = w
-          border-radius: .5 * w
-          content: counter(li)
-          counter-increment: li
-          text-align: center
-          font-size: .6rem
-          line-height: h
-
-    ul
-      > li
-        &:hover
-          &:before
-            border-color: $theme-button-hover-color
-
-        &:before
-          $w = .3rem
-          top: 10px
-          margin-left: .45rem
-          width: w = $w
-          height: h = w
-          border: .5 * w solid $light-blue
-          border-radius: w
-          background: transparent
-          content: ''
-          line-height: h
-  else
-    ol,
-    ul
-      margin-top: .4rem
-      counter-reset: li
-
-      p
-        margin: 0 0 .5rem
-
-      ol,
-      ul
-        padding-left: .5rem
-
-      li
-        position: relative
-        margin: .3rem 0
-        padding-left: .3rem
-
-a
-  color: $a-link-color
-  text-decoration: none
-  word-wrap: break-word
-  transition: all .2s
-  overflow-wrap: break-word
-
-  &:hover
-    color: $light-blue
-
-a.fancybox
-  outline: none
-
-  &:focus
-    outline: none
-
-  display: inline-block
-  width: 100%
-  text-align: center
-
-p
-  margin: 0 0 .8rem
-
-img
-  max-width: 100%
-  transition: all .2s
-
-// highlight
-.highlight-tools
-  .code-expand
-    position: absolute
-    top: 0
-    z-index: 1
-    padding: 7px 10px
-    color: $highlight-foreground
-    cursor: pointer
-    transition: all .3s
-    transform: rotate(0)
-
-    & + .code-lang
-      left: 30px
-
-    &.code-closed
-      transition: all .3s
-      transform: rotate(-90deg) !important
-
-  .code-lang
-    position: absolute
-    left: 15px
-    z-index: 1
-    color: $highlight-foreground
-    text-transform: capitalize
-    font-weight: bold
-    font-size: .8rem
-    line-height: 1.4rem
-    cursor: pointer
-
-  .copy-notice
-    position: absolute
-    top: 0
-    right: 0
-    z-index: 1
-    background: darken($highlight-background, 5)
-    color: $highlight-aqua
-    opacity: 0
-
-  .fa-clipboard
-    position: absolute
-    top: .4rem
-    right: 10px
-    z-index: 1
-    color: $highlight-aqua
-    cursor: pointer
-    transition: color .2s
-
-    &:hover
-      color: darken($highlight-aqua, 20%)
-
-.katex-wrap
-  overflow: auto
-
-  if hexo-config('katex') && hexo-config('katex.hide_scrollbar')
-    &::-webkit-scrollbar
-      display: none
-
-.layout_post
-  margin: 0 auto
-  padding: 2rem 15px
-  max-width: 1000px
-
-  img
-    display: block
-
+#post
   .tag_share
     .post-meta
       &__tag-list
@@ -243,62 +158,50 @@ img
 
       &__tags
         display: inline-block
-        margin: .4rem .4rem .4rem 0
-        padding: 0 .6rem
+        margin: 8px 8px 8px 0
+        padding: 0 12px
         width: fit-content
         border: 1px solid $light-blue
-        border-radius: .6rem
+        border-radius: 12px
         color: $light-blue
-        font-size: 12px
-        cursor: pointer
+        font-size: .85em
         transition: all .2s ease-in-out
 
         &:hover
           background: $light-blue
-          color: $button-color
+          color: var(--white)
 
     .post_share
       display: inline-block
       float: right
-      margin: .4rem 0
+      margin: 8px 0 20px
       width: fit-content
 
       .social-share
-        font-size: 12px
+        font-size: .85em
 
         .social-share-icon
           margin: 0 4px
-          width: 26px
-          height: 26px
-          font-size: 15px
-          line-height: 25px
+          width: w = 1.85em
+          height: w
+          font-size: 1.2em
+          line-height: w
 
   .post-copyright
     position: relative
-    margin: 2rem 0 .5rem
-    padding: .5rem .8rem
-    border: 1px solid $light-grey
+    margin: 40px 0 10px
+    padding: 10px 16px
+    border: 1px solid var(--light-grey)
     transition: box-shadow .3s ease-in-out
 
     &:before
+      @extend .fontawesomeIcon
       position: absolute
-      top: t = .5rem
-      right: t
-      width: w = .8rem
-      height: w
-      border-radius: w
-      background: $light-blue
-      content: ''
-
-    &:after
-      position: absolute
-      top: t = .7rem
-      right: t
-      width: w = .4rem
-      height: w
-      border-radius: w
-      background: $white
-      content: ''
+      top: 2px
+      right: 12px
+      color: $theme-color
+      content: '\f1f9'
+      font-size: 1.3em
 
     &:hover
       box-shadow: 0 0 8px 0 rgba(232, 237, 250, .6), 0 2px 4px 0 rgba(232, 237, 250, .5)
@@ -309,7 +212,7 @@ img
         font-weight: bold
 
       &-info
-        padding-left: .3rem
+        padding-left: 6px
 
         a
           text-decoration: underline
@@ -318,34 +221,26 @@ img
           &:hover
             text-decoration: none
 
-#article-container
-  a
-    color: $theme-link-color
+  .post-outdate-notice
+    position: relative
+    margin: 0 0 20px
+    padding: .5em 1.2em
+    border-radius: 3px
+    background-color: $noticeOutdate-bg
+    color: $noticeOutdate-color
 
-    &:hover
-      text-decoration: underline
+    if hexo-config('noticeOutdate.style') == 'flat'
+      padding: .5em 1em .5em 2.6em
+      border-left: 5px solid $noticeOutdate-border
 
-  img
-    margin: 0 auto .8rem
+      &:before
+        @extend .fontawesomeIcon
+        position: absolute
+        top: 50%
+        left: .9em
+        color: $noticeOutdate-border
+        content: '\f071'
+        transform: translateY(-50%)
 
-@media screen and (max-width: 1024px)
-  .layout_post
-    width: auto
-
-@media screen and (max-width: $sm)
-  .layout_post
-    padding: 1rem 5px
-
-    & > #post
-      padding: 1.8rem .7rem
-
-// adjust the layout width in big screen
-@media screen and (min-width: $lr)
-  .layout_post
-    max-width: 1300px
-
-  .layout_page
-    max-width: 1500px
-
-    &.hide-aside
-      max-width: 1300px
+  .ads-wrap
+    margin: 40px 0

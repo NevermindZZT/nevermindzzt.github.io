@@ -1,0 +1,27 @@
+@startuml
+
+hide empty description
+skinparam monochrome true
+scale 2
+title Audio 初始化流程
+
+[*] --> init
+init --> mediaserver
+init : init.rc(Android 7.0之后位于audioserver.rc)
+init : 启动mediaserver
+
+mediaserver --> AudioFlinger
+mediaserver --> AudioPolicyService
+mediaserver : path: frameworks/av/media/mediaserver/main_mediaserver.cpp
+mediaserver : 启动媒体服务，包括AudioFlinger, AudioPolicyService, RadioService等
+
+AudioFlinger : path: frameworks/av/services/audioflinger/AudioFlinger.cpp
+
+AudioPolicyService --> AudioPolicyManager
+AudioPolicyService : path: frameworks/av/services/audiopolicy/service/AudioPolicyService.cpp
+AudioPolicyService : 在 onFristRef 中启动 AudioPolicyManager
+
+AudioPolicyManager : path: frameworks/av/services/audiopolicy/managerdefault/AudioPolicyManager.cpp
+AudioPolicyManager : 解析 audio_policy.conf 文件(Android 7.0 之后为 audio_policy_configuration.xml)
+AudioPolicyManager : 加载 HwModule，创建所有非 direct 输出类型的 outputStream 和所有 inputStream以及相应的 playbackThread 或 recordThread 线程
+@enduml

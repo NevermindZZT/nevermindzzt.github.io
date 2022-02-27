@@ -1,43 +1,103 @@
-if hexo-config('valine.enable')
-  // valine
+#vcomment
+  font-size: 1.1em
+
+  .vbtn
+    border: none
+    background: var(--btn-bg)
+    color: var(--btn-color)
+
+    &:hover
+      background: var(--btn-hover-color)
+
+  .vimg
+    transition: all .3s
+
+    &:hover
+      transform: rotate(360deg)
+
+  .vcards .vcard .vcontent.expand
+    &:before,
+    &:after
+      z-index: 22
+
+#waline-wrap
+  --waline-font-size: 1.1em
+  --waline-theme-color: $button-bg
+  --waline-active-color: $button-hover-color
+
+  .vuser
+    transition: all .5s
+
+    &:hover
+      transform: rotate(360deg)
+
+if hexo-config('valine.bg')
   #vcomment
-    button
-      padding: .3rem 1rem
-      border-color: $button-color
-      background-color: $light-blue
-      color: $button-color
-      font-size: .7rem
-
-      &:hover
-        background-color: $theme-button-hover-color
-
     textarea
-      if hexo-config('valine.bg')
-        background: url(hexo-config('valine.bg')) 100% 100% no-repeat
+      background: url(hexo-config('valine.bg')) 100% 100% no-repeat
 
-    .info
+      &:focus
+        background-image: none
+
+if hexo-config('waline.bg')
+  #waline-wrap
+    textarea
+      background: url(hexo-config('waline.bg')) 100% 100% no-repeat
+
+      &:focus
+        background-image: none
+
+.fireworks
+  position: fixed
+  top: 0
+  left: 0
+  z-index: $fireworks-zIndex
+  pointer-events: none
+
+.medium-zoom-image--opened
+  z-index: 99999 !important
+  margin: 0 !important
+
+.medium-zoom-overlay
+  z-index: 99999 !important
+
+.mermaid-wrap
+  margin: 0 0 20px
+  text-align: center
+
+  & > svg
+    height: 100%
+
+.utterances,
+.fb-comments iframe
+  width: 100% !important
+
+#gitalk-container
+  .gt-meta
+    margin: 0 0 .8em
+    padding: 6px 0 16px
+
+.katex-wrap
+  overflow: auto
+
+  if hexo-config('katex') && hexo-config('katex.hide_scrollbar')
+    &::-webkit-scrollbar
       display: none
 
-    .vimg
-      border: 0
+// mathjax
+mjx-container[display],
+.has-jax
+  overflow-x: auto
+  overflow-y: hidden
 
-      &:hover
-        transform: rotate(540deg)
+.aplayer
+  color: $font-black
 
-    .vat
-      padding: 0 .8rem
-      border: 1px solid $light-blue
-      border-radius: 5px
-      color: $light-blue
-      font-size: .7125rem
+#article-container
+  .aplayer
+    margin: 0 0 20px
 
-      &:hover
-        background-color: $light-blue
-        color: $button-color
-
-if hexo-config('beautify.enable')
-  #article-container
-    .aplayer
+    if hexo-config('beautify.enable')
       ol,
       ul
         margin: 0
@@ -50,39 +110,5 @@ if hexo-config('beautify.enable')
           &:before
             content: none
 
-// third-party
-.fireworks
-  position: fixed
-  top: 0
-  left: 0
-  z-index: 999999
-  pointer-events: none
-
-.medium-zoom-image--opened
-  z-index: 99999 !important
-  margin: 0 !important
-
-.medium-zoom-overlay
-  z-index: 99999 !important
-
-.mermaid
-  overflow: auto
-  margin: 0 0 1rem
-  background: $white
-  text-align: center
-  opacity: 0
-  transition: all .3s
-
-  &[data-processed]
-    opacity: 1
-
-.utterances
-  max-width: 100%
-
-#gitalk-container
-  .gt-meta
-    margin: 0 0 .8em
-    padding: .3rem 0 .8em
-
-.has-jax
-  overflow: auto
+.snackbar-css
+  border-radius: 5px !important

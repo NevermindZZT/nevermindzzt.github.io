@@ -1,43 +1,82 @@
-html
-  height: 100%
-  font-size: $rem
+:root
+  --global-font-size: $font-size
+  --global-bg: $body-bg
+  --font-color: $font-black
+  --hr-border: lighten($theme-hr-color, 50%)
+  --hr-before-color: lighten($theme-hr-color, 30%)
+  --search-bg: $search-bg
+  --search-input-color: $search-input-color
+  --search-result-title: $search-result-title
+  --preloader-bg: $preloader-bg
+  --preloader-color: $preloader-word-color
+  --tab-border-color: $tab-border-color
+  --tab-botton-bg: $tab-botton-bg
+  --tab-botton-color: $tab-botton-color
+  --tab-button-hover-bg: $tab-button-hover-bg
+  --tab-button-active-bg: $tab-button-active-bg
+  --card-bg: $card-bg
+  --sidebar-bg: $sidebar-background
+  --btn-hover-color: $button-hover-color
+  --btn-color: $button-color
+  --btn-bg: $button-bg
+  --text-bg-hover: rgba($text-bg-hover, .7)
+  --light-grey: $light-grey
+  --dark-grey: $dark-grey
+  --white: $white
+  --text-highlight-color: $text-highlight-color
+  --blockquote-color: $blockquote-color
+  --blockquote-bg: $blockquote-background-color
+  --reward-pop: $reward-pop-up-bg
+  --toc-link-color: $toc-link-color
+  --card-box-shadow: 0 3px 8px 6px rgba(7, 17, 27, .05)
+  --card-hover-box-shadow: 0 3px 8px 6px rgba(7, 17, 27, .09)
+  --pseudo-hover: $pseudo-hover
+  --headline-presudo: #a0a0a0
+  --scrollbar-color: $scrollbar-color
 
 body
   position: relative
   min-height: 100%
-  background: $body-bg
-  color: $font-black
-  font-size: $font-size
+  background: var(--global-bg)
+  color: var(--font-color)
+  font-size: var(--global-font-size)
   font-family: $font-family
   line-height: $text-line-height
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
 
   if !hexo-config('copy.enable')
     user-select: none
-    -moz-user-select: none
-    -webkit-user-select: none
-    -ms-user-select: none
 
+// scrollbar - chrome/safari
 *::-webkit-scrollbar
   width: 8px
   height: 8px
 
 *::-webkit-scrollbar-thumb
-  background: $light-blue
+  background: var(--scrollbar-color)
 
 *::-webkit-scrollbar-track
   background-color: transparent
 
-#web_bg
-  position: fixed
-  z-index: -999
-  width: 100%
-  height: 100%
-  background: $web-bg
-  background-attachment: local
-  background-position: center
-  background-size: cover
-  background-repeat: no-repeat
+// scrollbar - firefox
+*
+  scrollbar-width: thin
+  scrollbar-color: var(--scrollbar-color) transparent
+
+input::placeholder
+  color: var(--font-color)
+
+if $web-bg
+  #web_bg
+    position: fixed
+    z-index: -999
+    width: 100%
+    height: 100%
+    background: $web-bg
+    background-attachment: local
+    background-position: center
+    background-size: cover
+    background-repeat: no-repeat
 
 h1,
 h2,
@@ -46,8 +85,8 @@ h4,
 h5,
 h6
   position: relative
-  margin: 1rem 0 .7rem
-  color: lighten($font-color, 15%)
+  margin: 20px 0 14px
+  color: var(--text-highlight-color)
   font-weight: bold
 
   code
@@ -56,55 +95,36 @@ h6
 *
   box-sizing: border-box
 
-#toggle-sidebar
-  position: fixed
-  bottom: $sidebar-icon-top
-  left: $sidebar-icon-left
-  z-index: 100
-  font-size: $sidebar-icon-size
-  // opacity: 0
-  cursor: pointer
-  transition: all .2s
-
 hr
   position: relative
-  margin: 2rem auto
-  width: calc(100% - 4px)
-  border: 2px dashed lighten($theme-hr-color, 50%)
+  margin: 40px auto
+  border: 2px dashed var(--hr-border)
 
-  &:hover
+  if hexo-config('hr_icon.enable')
+    width: calc(100% - 4px)
+
+    &:hover
+      &:before
+        left: calc(95% - 20px)
+
     &:before
-      left: calc(95% - 20px)
+      position: absolute
+      top: $hr-icon-top
+      left: 5%
+      z-index: 1
+      color: var(--hr-before-color)
+      content: $hr-icon
+      font-size: 20px
+      line-height: 1
+      transition: all 1s ease-in-out
+      @extend .fontawesomeIcon
 
-  &:before
-    position: absolute
-    top: $hr-icon-top
-    left: 5%
-    z-index: 1
-    color: $theme-hr-color
-    content: $hr-icon
-    font-style: normal
-    font-variant: normal
-    font-size: 20px
-    line-height: 1
-    transition: all 1s ease-in-out
-    text-rendering: auto
-    -webkit-font-smoothing: antialiased
-
-    if hexo-config('fontawesome_v5') && hexo-config('fontawesome_v5.enable')
-      font-weight: 600
-      font-family: 'Font Awesome 5 Free'
-    else
-      font-weight: normal
-      font-family: FontAwesome
-
-iframe
-  margin: 0 0 1rem
+.table-wrap
+  overflow-x: scroll
+  margin: 0 0 20px
 
 table
-  display: block
-  overflow: auto
-  margin: 0 0 1rem
+  display: table
   width: 100%
   border-spacing: 0
   border-collapse: collapse
@@ -115,312 +135,86 @@ table
 
   th,
   td
-    padding: .3rem .6rem
-    border: 1px solid darken($light-grey, 10%)
+    padding: 6px 12px
+    border: 1px solid var(--light-grey)
     vertical-align: middle
 
 *::selection
   background: $theme-text-selection-color
   color: #F7F7F7
 
+button
+  padding: 0
+  outline: 0
+  border: none
+  background: none
+  cursor: pointer
+  touch-action: manipulation
+
+a
+  color: $a-link-color
+  text-decoration: none
+  word-wrap: break-word
+  transition: all .2s
+  overflow-wrap: break-word
+
+  &:hover
+    color: $light-blue
+
 // font
-#nav #site_title,
-#nav #site_subtitle,
-#site-name,
-#aside_content .author-info__name,
-#aside_content .author-info__description
-  font-family: $site-name-font
-
-.is_right
-  text-align: right
-
-.is_left
-  text-align: left
+if $site-name-font
+  #site-title,
+  #site-subtitle,
+  #site-name,
+  #aside-content .author-info__name,
+  #aside-content .author-info__description
+    font-family: $site-name-font
 
 .is-center
   text-align: center
 
-.is_visible
-  display: block !important
+.copy-true
+  user-select: all
 
-.is-visible-inline
-  display: inline-block !important
-
-.is_invisible
-  display: none !important
-
-.is_hidden
-  overflow: hidden
-
-.pull_left
+.pull-left
   float: left
 
-.pull_right
+.pull-right
   float: right
 
-// button hover
-.button--primary
-  color: $theme-button-hover-color
+img
+  &[src=''],
+  &:not([src])
+    opacity: 0
 
-.button--animated
-  transition-duration: 1s
-  transition-property: color
+// lazyload blur
+if hexo-config('lazyload.enable') && hexo-config('lazyload.blur') && !hexo-config('lazyload.placeholder')
+  img
+    &[data-lazy-src]:not(.loaded)
+      filter: blur(8px) brightness(1)
 
-  &:before
-    position: absolute
-    top: 0
-    right: 0
-    bottom: 0
-    left: 0
-    z-index: -1
-    background: $theme-button-hover-color
-    content: ''
-    transition-timing-function: ease-out
-    transition-duration: .5s
-    transition-property: transform
-    transform: scaleX(0)
-    transform-origin: 0 50%
-
-  &:hover
-    &:before
-      transition-timing-function: cubic-bezier(.45, 1.64, .47, .66)
-      transform: scaleX(1)
-
-img[src=''],
-img:not([src])
-  opacity: 0
+    &[data-lazy-src].error
+      filter: none
 
 .img-alt
-  margin: -.5rem 0 .5rem
+  margin: -10px 0 10px
+  color: #858585
 
-// hexo tag video
-.video-container
-  position: relative
-  overflow: hidden
-  margin-bottom: .8rem
-  padding-top: 56.25%
-  height: 0
+  &:hover
+    text-decoration: none !important
 
-  iframe
-    position: absolute
-    top: 0
-    left: 0
-    margin-top: 0
-    width: 100%
-    height: 100%
+blockquote
+  margin: 0 0 20px
+  padding: 12px 15px
+  border-left: 3px solid $blockquote-padding-color
+  background-color: var(--blockquote-bg)
+  color: var(--blockquote-color)
 
-// tag-hide
-.hide-inline,
-.hide-block
-  & > .hide-button
-    position: relative
-    z-index: 1
-    display: inline-block
-    padding: 0 1rem
-    background: $tag-hide-bg
-    text-align: center
-    cursor: pointer
+  footer
+    cite
+      &:before
+        padding: 0 5px
+        content: '—'
 
-    &:hover
-      text-decoration: none !important
-
-  & > .hide-content
-    display: none
-
-.hide-inline
-  & > .hide-button
-    margin: 0 .3rem
-
-  & > .hide-content
-    margin: 0 .3rem
-
-.hide-block
-  margin: 0 0 .8rem
-
-.comment_headling
-  margin-bottom: 10px
-  font-weight: 700
-  font-size: 20px
-
-.post-ad
-  margin: 2rem 0
-
-.ad_height
-  display: block !important
-  height: auto !important
-
-#content-inner,
-#footer
-  animation: main 1s
-
-#nav
-  animation: nav-effect 1s
-
-#site_title,
-#site_subtitle
-  animation: titlescale 1s
-
-canvas:not(#ribbon-canvas),
-#web_bg
-  animation: to_show 4s
-
-#ribbon-canvas
-  animation: ribbon_to_show 4s
-
-.card-announcement-animation
-  color: #FF0000
-  animation: announ_animation .8s linear infinite
-
-.scroll-down-effects
-  animation: scroll-down-effect 1.5s infinite
-
-if hexo-config('avatar.effect') == true
-  .avatar-img
-    animation: avatar_turn_around 2s linear infinite
-
-.reward-main
-  animation: donate_effcet .3s .1s ease both
-
-.tocOpenPc
-  .sidebar-toc__title
-    animation: tocsidebarLtoR .5s
-
-  .sidebar-toc__progress
-    animation: tocsidebarLtoR .7s
-
-  .sidebar-toc__content
-    animation: tocsidebarLtoR .9s
-
-.tocOpenMobile
-  .sidebar-toc__title
-    animation: tocsidebarRtoL .4s
-
-  .sidebar-toc__progress
-    animation: tocsidebarRtoL .6s
-
-  .sidebar-toc__content
-    animation: tocsidebarRtoL .7s
-
-@keyframes scroll-down-effect
-  0%
-    top: 0
-    opacity: .4
-
-  50%
-    top: -16px
-    opacity: 1
-
-  100%
-    top: 0
-    opacity: .4
-
-@keyframes nav-effect
-  0%
-    opacity: 0
-    transform: translateY(-50px)
-
-  100%
-    opacity: 1
-    transform: translateY(0)
-
-@keyframes headerNoOpacity
-  0%
-    transform: translateY(-50px)
-
-  100%
-    transform: translateY(0)
-
-@keyframes main
-  0%
-    opacity: 0
-    transform: translateY(50px)
-
-  100%
-    opacity: 1
-    transform: translateY(0)
-
-@keyframes titlescale
-  0%
-    opacity: 0
-    transform: scale(.7)
-
-  100%
-    opacity: 1
-    transform: scale(1)
-
-@keyframes search_close
-  0%
-    opacity: 1
-    transform: scale(1)
-
-  100%
-    opacity: 0
-    transform: scale(.7)
-
-@keyframes to_show
-  0%
-    opacity: 0
-
-  100%
-    opacity: 1
-
-@keyframes ribbon_to_show
-  0%
-    opacity: 0
-
-  100%
-    opacity: hexo-config('canvas_ribbon.alpha')
-
-@keyframes avatar_turn_around
-  from
-    transform: rotate(0)
-
-  to
-    transform: rotate(360deg)
-
-@keyframes sub_menus
-  0%
-    opacity: 0
-    transform: translateY(10px)
-
-  100%
-    opacity: 1
-    transform: translateY(0)
-
-@keyframes donate_effcet
-  0%
-    opacity: 0
-    transform: translateY(-20px)
-
-  100%
-    opacity: 1
-    transform: translateY(0)
-
-@keyframes announ_animation
-  0%,
-  to
-    transform: scale(1)
-
-  50%
-    transform: scale(1.2)
-
-@keyframes sidebarItem
-  0%
-    transform: translateX(200px)
-
-  100%
-    transform: translateX(0)
-
-@keyframes tocsidebarRtoL
-  0%
-    transform: translateX(200px)
-
-  100%
-    transform: translateX(0)
-
-@keyframes tocsidebarLtoR
-  0%
-    transform: translateX(-200px)
-
-  100%
-    transform: translateX(0)
+  & > :last-child
+    margin-bottom: 0 !important

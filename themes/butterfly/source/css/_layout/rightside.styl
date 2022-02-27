@@ -1,60 +1,49 @@
 #rightside
   position: fixed
-  right: -38px
-  bottom: 40px
+  right: -48px
+  bottom: $rightside-bottom
+  z-index: 100
   opacity: 0
   transition: all .5s
 
   #rightside-config-hide
-    transform: translate(35px, 0)
+    height: 0
+    opacity: 0
+    transition: transform .4s
+    transform: translate(45px, 0)
 
-  .rightside-in
-    transform: translate(0, 0) !important
-    animation: rightsideIn .3s
+    &.show
+      height: auto
+      opacity: 1
+      transform: translate(0, 0)
 
-  .rightside-out
-    animation: rightsideOut .3s
+    &.status
+      height: auto
+      opacity: 1
 
   & > div
-    & > i,
-    & > a,
-    & > div
+    & > button,
+    & > a
       display: block
-      margin-bottom: 2px
-      width: 30px
-      height: 30px
-      background-color: $light-blue
-      color: $button-color
+      margin-bottom: 5px
+      width: w = 35px
+      height: w
+      border-radius: 5px
+      background-color: var(--btn-bg)
+      color: var(--btn-color)
       text-align: center
       font-size: 16px
-      line-height: 29px
-      cursor: pointer
+      line-height: w
 
       &:hover
-        background-color: $theme-button-hover-color
-
-  #rightside_config
-    i
-      animation: avatar_turn_around 2s linear infinite
+        background-color: var(--btn-hover-color)
 
   #mobile-toc-button
     display: none
 
-@media screen and (max-width: $bg)
-  #rightside
-    #mobile-toc-button
+    +maxWidth900()
       display: block
 
-@keyframes rightsideIn
-  0%
-    transform: translate(30px, 0)
-
-  100%
-    transform: translate(0, 0)
-
-@keyframes rightsideOut
-  0%
-    transform: translate(0, 0)
-
-  100%
-    transform: translate(30px, 0)
+  +maxWidth900()
+    #hide-aside-btn
+      display: none

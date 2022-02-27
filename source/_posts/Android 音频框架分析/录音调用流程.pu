@@ -1,0 +1,26 @@
+@startuml
+
+hide empty description
+skinparam monochrome true
+scale 2
+title Audio 录音调用流程
+
+[*] --> AudioRecord.java
+AudioRecord.java : path： framwworks/base/media/java/android/media/AudioRecode.java
+AudioRecord.java : Android 音频应用框架
+AudioRecord.java : 负责录音数据采集，为 Android App 提供API
+
+AudioRecord.java --> android_media_AudioRecord.cpp
+android_media_AudioRecord.cpp : path: frameworks/base/core/jni/android_media_AudioRecord.cpp
+android_media_AudioRecord.cpp : jni层
+
+android_media_AudioRecord.cpp --> AudioRecord.cpp
+AudioRecord.cpp : path: frameworks/av/media/libmedia/AudioRecord.cpp
+AudioRecord.cpp : Android 音频本地框架
+AudioRecord.cpp : 在openRecord_l中调用AudioFlinger的openRecord函数
+
+AudioRecord.cpp --> AudioFlinger.cpp
+AudioFlinger.cpp : path: av/services/audioflinger/AudioFlinger.cpp
+
+
+@enduml

@@ -1,52 +1,68 @@
-#nav
+#page-header
   position: relative
   width: 100%
   background-color: $light-blue
-  background-attachment: local
   background-position: center center
   background-size: cover
   background-repeat: no-repeat
   transition: all .5s
 
+  &:not(.not-top-img):before
+    position: absolute
+    width: 100%
+    height: 100%
+    background-color: alpha($dark-black, .3)
+    content: ''
+
   // index
   &.full_page
     height: $index_top_img_height
+    background-attachment: fixed
 
     #site-info
       position: absolute
       top: $index_site_info_top
-      padding: 0 .5rem
+      padding: 0 10px
       width: 100%
 
-  #site_title,
-  #site_subtitle,
-  #scroll_down .scroll-down-effects
-    color: $light-grey
+  #site-title,
+  #site-subtitle,
+  #scroll-down .scroll-down-effects
     text-align: center
-    text-shadow: .1rem .1rem .2rem rgba(0, 0, 0, .15)
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, .15)
     line-height: 1.5
 
-  #site_title
+  #site-title
     margin: 0
-    font-size: 1.3rem
+    color: var(--white)
+    font-size: 1.85em
 
-  #site_subtitle
-    font-size: .8rem
+    +minWidth768()
+      font-size: 2.85em
+
+  #site-subtitle
+    color: var(--light-grey)
+    font-size: 1.15em
+
+    +minWidth768()
+      font-size: 1.72em
 
   #site_social_icons
     display: none
     margin: 0 auto
-    width: 15rem
+    width: 300px
     text-align: center
 
-    .social-icon
-      margin: 0 .5rem
-      color: $light-grey
-      text-shadow: .1rem .1rem .2rem rgba(0, 0, 0, .15)
-      font-size: .9rem
-      cursor: pointer
+    +maxWidth768()
+      display: block
 
-  #scroll_down
+    .social-icon
+      margin: 0 10px
+      color: var(--light-grey)
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .15)
+      font-size: 1.43em
+
+  #scroll-down
     position: absolute
     bottom: 0
     width: 100%
@@ -55,138 +71,207 @@
     .scroll-down-effects
       position: relative
       width: 100%
+      color: var(--light-grey)
       font-size: 30px
 
   // page
-  &.not-index-bg
-    height: 20rem
+  &.not-home-page
+    height: 400px
 
-  #page_site-info
+    +maxWidth768()
+      height: 280px
+
+  #page-site-info
     position: absolute
-    top: 10rem
-    padding: 0 .5rem
+    top: 200px
+    padding: 0 10px
     width: 100%
+
+    +maxWidth768()
+      top: 140px
 
   // post
   &.post-bg
-    height: 20rem
+    height: 400px
+
+    +maxWidth768()
+      height: 360px
 
     &:before
-      position: absolute
-      top: 0
-      left: 0
-      display: block
-      width: 100%
-      height: 100%
       background-color: alpha($dark-black, .5)
-      content: ''
 
-    #post-info
-      position: absolute
-      bottom: 1.5rem
-      padding: 0 8%
-      width: 100%
-      color: $light-grey
+  #post-info
+    position: absolute
+    bottom: 100px
+    padding: 0 8%
+    width: 100%
+    text-align: center
+
+    +maxWidth900()
+      bottom: 30px
       text-align: left
 
-      #post-title
-        margin-bottom: .4rem
-        font-size: 1.5rem
+    +maxWidth768()
+      bottom: 22px
+      padding: 0 22px
 
-        .posttitle
-          display: -webkit-box
-          overflow: hidden
-          line-height: 1.5
-          -webkit-line-clamp: 3
-          -webkit-box-orient: vertical
+  &.not-top-img
+    margin-bottom: 10px
+    height: 60px
+    background: 0
 
-      #post-meta
-        font-size: 95%
+    #nav
+      background: rgba(255, 255, 255, .8)
+      box-shadow: 0 5px 6px -5px rgba(133, 133, 133, .6)
 
-        > .meta-secondline,
-        > .meta-thirdline
-          display: inline
+      a
+        color: var(--font-color)
+        text-shadow: none
 
-        .word-count,
-        #busuanzi_value_page_pv,
-        .comment-count
-          padding-left: .2rem
+  &.nav-fixed
+    #nav
+      position: fixed
+      top: -60px
+      z-index: 91
+      background: rgba(255, 255, 255, .8)
+      box-shadow: 0 5px 6px -5px alpha($grey, .6)
+      transition: transform .2s ease-in-out, opacity .2s ease-in-out
 
-        .post-meta
-          &__separator
-            margin: 0 .3rem
+      a,
+      #site-name,
+      #toggle-menu
+        color: var(--font-color)
+        text-shadow: none
 
-          &__icon
-            margin-right: .2rem
+        &:hover
+          color: $light-blue
 
-        a
-          color: $light-grey
-          transition: all .3s ease-out
+  &.nav-visible
+    #nav
+      transition: all .5s
+      transform: translate3d(0, 100%, 0)
 
-          &:hover
-            color: $light-blue
-            text-decoration: underline
+    & + .layout
+      & > .aside-content > .sticky_layout
+        top: 70px
+        transition: top .5s
 
-#page-header
+#page
+  h1.page-title
+    margin: 8px 0 20px
+
+// for not top_img
+#post
+  & > #post-info
+    margin-bottom: 30px
+
+    .post-title
+      padding-bottom: 4px
+      border-bottom: 1px solid var(--light-grey)
+      color: var(--text-highlight-color)
+
+      .post-edit-link
+        float: right
+
+    #post-meta,
+    #post-meta a
+      color: #78818a
+
+#post-info
+  .post-title
+    @extend .limit-more-line
+    margin-bottom: 8px
+    color: var(--white)
+    font-weight: normal
+    font-size: 2.5em
+    line-height: 1.5
+    -webkit-line-clamp: 3
+
+    +maxWidth768()
+      font-size: 2.1em
+
+    .post-edit-link
+      padding-left: 10px
+
+  #post-meta
+    color: var(--light-grey)
+    font-size: 95%
+
+    +minWidth768()
+      > .meta-secondline
+        > span:first-child
+          display: none
+
+    +maxWidth768()
+      font-size: 90%
+
+      > .meta-firstline,
+      > .meta-secondline
+        display: inline
+
+    .post-meta
+      &-separator
+        margin: 0 5px
+
+      &-icon
+        margin-right: 4px
+
+      &-label
+        if hexo-config('post_meta.post.label')
+          margin-right: 4px
+        else
+          display: none
+
+    a
+      color: var(--light-grey)
+      transition: all .3s ease-out
+
+      &:hover
+        color: $text-hover
+        text-decoration: underline
+
+    if hexo-config('post_meta.post.date_format') == 'relative'
+      time
+        display: none
+
+#nav
   position: absolute
   top: 0
-  z-index: 99
-  padding: 10px 36px
+  z-index: 90
+  display: flex
+  align-items: center
+  padding: 0 36px
   width: 100%
-  height: 58px
-  border: none
-  font-size: 18px
+  height: 60px
+  font-size: 1.3em
   opacity: 0
   transition: all .5s
 
-  &:not(.fixed)
-    .menus
-      padding-right: 0 !important
+  +maxWidth768()
+    padding: 0 16px
 
-  .toggle-menu
+  &.show
+    opacity: 1
+
+  #blog_name
+    flex: 1
+
+  #toggle-menu
     display: none
-    padding: .1rem 0 0 .3rem
+    padding: 2px 0 0 6px
     vertical-align: top
 
     &:hover
-      color: $white
-
-    &.is-visible-inline
-      .site-page
-        font-size: inherit
+      color: var(--white)
 
   a
-    color: $light-grey
+    color: var(--light-grey)
 
     &:hover
-      color: $white
-
-  &.fixed
-    position: fixed
-    top: -60px
-    z-index: 101
-    background: alpha($white, .8)
-    box-shadow: 0 5px 6px -5px alpha($grey, .6)
-    transition: transform .2s ease-in-out, opacity .2s ease-in-out
-
-    a,
-    #site-name,
-    .toggle-menu
-      color: $font-black
-      text-shadow: none
-
-      &:hover
-        color: $light-blue
-
-  &.visible
-    transition: all .5s
-    transform: translate3d(0, 100%, 0)
-
-    .menus_item_child
-      background-color: $white !important
+      color: var(--white)
 
   #site-name
-    text-shadow: .1rem .1rem .2rem rgba($dark-black, .15)
+    text-shadow: 2px 2px 4px rgba($dark-black, .15)
     font-weight: bold
     cursor: pointer
 
@@ -196,35 +281,18 @@
     .menus_item
       position: relative
       display: inline-block
-      padding: 0 0 0 .7rem
+      padding: 0 0 0 14px
 
       &:hover
         .menus_item_child
           display: block
 
-        .menus-expand
-          transform: rotate(180deg) !important
+        & > a > i:last-child
+          transform: rotate(180deg)
 
-      .menus-expand
+      & > a > i:last-child
         padding: 4px
-        transition: all .3s
-        transform: rotate(0)
-
-      & > a
-        &:after
-          position: absolute
-          bottom: 0
-          left: 0
-          z-index: -1
-          width: 0
-          height: 3px
-          background-color: lighten($theme-color, 30%)
-          content: ''
-          transition: all .3s ease-in-out
-
-        &:hover
-          &:after
-            width: 100%
+        transition: transform .3s
 
       .menus_item_child
         position: absolute
@@ -233,9 +301,10 @@
         margin-top: 8px
         padding: 0
         width: max-content
-        background-color: alpha($white, .8)
+        background-color: var(--sidebar-bg)
         box-shadow: 0 5px 20px -4px rgba($dark-black, .5)
         animation: sub_menus .3s .1s ease both
+        border-radius: 5px
 
         &:before
           position: absolute
@@ -246,74 +315,58 @@
           content: ''
 
         li
-          padding: 1px 10px
           list-style: none
-          text-align: center
 
           &:hover
-            background: $theme-color
+            background: var(--text-bg-hover)
 
+          &:first-child
+            border-radius: 5px 5px 0 0
+          &:last-child
+            border-radius: 0 0 5px 5px
           a
-            color: $font-black
-            text-shadow: none
+            display: inline-block
+            padding: 8px 16px
+            width: 100%
+            color: var(--font-color) !important
+            text-shadow: none !important
 
-  #search_button
+  &.hide-menu
+    #toggle-menu
+      display: inline-block !important
+
+      .site-page
+        font-size: inherit
+
+    .menus_items
+      display: none
+
+    #search-button span
+      display: none
+
+  #search-button
     display: inline
-    padding: 0 0 0 .7rem
+    padding: 0 0 0 14px
 
   .site-page
     position: relative
-    padding-bottom: .3rem
-    text-shadow: .05rem .05rem .1rem rgba($dark-black, .3)
-    font-size: .7rem
+    padding-bottom: 6px
+    text-shadow: 1px 1px 2px rgba($dark-black, .3)
+    font-size: .78em
     cursor: pointer
 
-@media screen and (min-width: $sm)
-  #nav
-    #site_title
-      font-size: 2rem
+    &:not(.child)
+      &:after
+        position: absolute
+        bottom: 0
+        left: 0
+        z-index: -1
+        width: 0
+        height: 3px
+        background-color: lighten($theme-color, 30%)
+        content: ''
+        transition: all .3s ease-in-out
 
-    #site_subtitle
-      font-size: 1.2rem
-
-@media screen and (max-width: $sm)
-  #page-header
-    padding: 10px .8rem
-
-  #nav
-    #site_social_icons
-      display: block
-
-    &.not-index-bg
-      height: 14rem
-
-    #page_site-info
-      top: 7rem
-
-    &.post-bg
-      height: 18rem
-
-      & > #post-info
-        bottom: 1rem
-        padding: 0 5%
-
-        & > #post-title
-          font-size: 1.2rem
-
-        & > #post-meta
-          font-size: 90%
-
-          .post-meta__categories
-            display: none
-
-          .meta-thirdline
-            display: block
-
-            .post-meta-pv-cv
-              .post-meta__separator:first-child
-                display: none
-
-            if !hexo-config('busuanzi.page_pv')
-              .post-meta-commentcount
-                .post-meta__separator
-                  display: none
+      &:hover
+        &:after
+          width: 100%

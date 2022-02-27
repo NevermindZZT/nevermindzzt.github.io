@@ -1,18 +1,27 @@
-each value, label in theme.menu
-  if !Array.isArray(value)
-    .menus_item
-      a.site-page(href=url_for(trim(value.split('||')[0])))
-        i.fa-fw(class=trim(value.split('||')[1]))
-        span=' '+label
-  else
-    .menus_item
-      a.site-page
-        i.fa-fw(class=trim(label.split('||')[1]) aria-hidden="true")
-        span=' '+ trim(label.split('||')[0])
-        i.fa.fa-chevron-down.menus-expand(aria-hidden="true")
-      ul.menus_item_child
-        each i in value
-          li
-            a.site-page(href=url_for(trim(i.split('||')[1])))
-              i.fa-fw(class=trim(i.split('||')[2]))
-              span=' '+trim(i.split('||')[0])
+if theme.menu
+  .menus_items
+    each value, label in theme.menu
+      if typeof value !== 'object'
+        .menus_item
+          - const valueArray = value.split('||')
+          a.site-page(href=url_for(trim(valueArray[0])))
+            if valueArray[1]
+              i.fa-fw(class=trim(valueArray[1]))
+            span=' '+label
+      else
+        .menus_item
+          - const labelArray = label.split('||')
+          - const hideClass = labelArray[2] && trim(labelArray[2]) === 'hide' ? 'hide' : ''
+          a.site-page.group(class=`${hideClass}` href='javascript:void(0);')
+            if labelArray[1]
+              i.fa-fw(class=trim(labelArray[1]))
+            span=' '+ trim(labelArray[0])
+            i.fas.fa-chevron-down
+          ul.menus_item_child
+            each val,lab in value 
+              - const valArray = val.split('||')
+              li
+                a.site-page.child(href=url_for(trim(valArray[0])))
+                  if valArray[1]
+                    i.fa-fw(class=trim(valArray[1]))
+                  span=' '+ lab
