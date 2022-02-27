@@ -108,5 +108,13 @@ theme: butterfly
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: https://github.com/NevermindZZT/nevermindzzt.github.io
+  # repo:
+  #   github:
+  #     url: https://github.com/NevermindZZT/nevermindzzt.github.io
+  #     branch: master
+  #     token: $GITHUB_TOKEN
+  name: Letter
+  email: nevermindzzt@gmail.com
+  repository: https://github.com/NevermindZZT/nevermindzzt.github.io.git
   branch: master
+  # token: $GITHUB_TOKEN

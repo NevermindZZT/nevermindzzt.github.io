@@ -35,8 +35,8 @@ copy:
 # formal:
 #   icon: link || the description
 social:
-  fa fa-github: https://github.com/NevermindZZT || Github
-  fa fa-envelope: mailto:nevermindzzt@gmail.com || Email
+  fab fa-github: https://github.com/NevermindZZT || Github
+  fas fa-envelope: mailto:nevermindzzt@gmail.com || Email
   fa fa-rss: /atom.xml || RSS
   # fab fa-github: https://github.com/xxxxx || Github
   # fas fa-envelope: mailto:xxxxxx@gmail.com || Email
